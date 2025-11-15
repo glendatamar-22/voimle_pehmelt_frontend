@@ -249,6 +249,18 @@ const AdminPanel = () => {
     }
   };
 
+  const handleDeleteParent = async (id) => {
+    if (window.confirm('Kas olete kindel, et soovite selle lapsevanema kustutada?')) {
+      try {
+        await api.delete(`/admin/parents/${id}`);
+        fetchData();
+      } catch (error) {
+        console.error('Error deleting parent:', error);
+        alert('Viga lapsevanema kustutamisel');
+      }
+    }
+  };
+
   const handleExportGroupCSV = async (groupId) => {
     try {
       const response = await api.get(`/groups/${groupId}/export-csv`, {
@@ -507,6 +519,7 @@ const AdminPanel = () => {
                       <TableCell>E-post</TableCell>
                       <TableCell>Telefon</TableCell>
                       <TableCell>Õpilasi</TableCell>
+                      <TableCell align="right">Tegevused</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>
@@ -518,6 +531,17 @@ const AdminPanel = () => {
                         <TableCell>{parent.email}</TableCell>
                         <TableCell>{parent.phone}</TableCell>
                         <TableCell>{parent.students?.length || 0}</TableCell>
+                        <TableCell align="right">
+                          <IconButton
+                            size="small"
+                            color="error"
+                            onClick={() => handleDeleteParent(parent._id)}
+                            disabled={parent.students?.length > 0}
+                            title={parent.students?.length > 0 ? 'Ei saa kustutada - on õpilasi' : 'Kustuta lapsevanem'}
+                          >
+                            <Delete />
+                          </IconButton>
+                        </TableCell>
                       </TableRow>
                     ))}
                   </TableBody>
