@@ -252,11 +252,13 @@ const AdminPanel = () => {
   const handleDeleteParent = async (id) => {
     if (window.confirm('Kas olete kindel, et soovite selle lapsevanema kustutada?')) {
       try {
-        await api.delete(`/admin/parents/${id}`);
+        const response = await api.delete(`/admin/parents/${id}`);
+        alert('Lapsevanem kustutatud!');
         fetchData();
       } catch (error) {
         console.error('Error deleting parent:', error);
-        alert('Viga lapsevanema kustutamisel');
+        const errorMessage = error.response?.data?.message || 'Viga lapsevanema kustutamisel';
+        alert(errorMessage);
       }
     }
   };
